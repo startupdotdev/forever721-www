@@ -4,10 +4,6 @@
 
 @tailwind base;
 
-body {
-  @apply bg-red-900;
-}
-
 @tailwind components;
 
 @tailwind utilities;
