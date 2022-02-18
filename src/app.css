@@ -6,4 +6,12 @@
 
 @tailwind components;
 
+html {
+	font-family: 'Fira Sans', sans-serif;
+}
+
+.heading {
+	font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
 @tailwind utilities;
