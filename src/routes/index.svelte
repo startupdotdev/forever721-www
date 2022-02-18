@@ -22,7 +22,7 @@
 			<p class='text-left text-sm mb-12'>Know exactly what's inside your NFT, and how permanent it really is.</p>
 
 			<button class='bg-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'>Install Forever721 browser extension</button>
-			<button class='text-center w-full'>Or try it out below 👇</button>
+			<button class='text-center w-full'>Or analyze an NFT below 👇</button>
 		</div>
 	</div>
 
@@ -73,18 +73,61 @@
 		</form>
 	</div>
 
-	<div>
-		<h2>What if your BAYC became a 💩 emoji?</h2>
-		<p>NFT ownership is permanently recorded on the blockchain.</p>
+	<div class='p-4 mt-12'>
+		<h2 class='text-3xl heading mb-1'>What if your BAYC became a 💩?</h2>
+		<p class='mb-2'>NFT ownership is permanently recorded on the blockchain.</p>
 		<p>However, for some NFTs, the metadata that we all recognize and love (the image, name, rarity attributes) could change at any time. It all depends on how the developers’ setup the NFTs.</p>
 	</div>
 
-	<div>
-		<h2>How does Forever721 work?</h2>
-		<p>The Forever721 browser extension shows you exactly what is in the NFT you see while browsing OpenSea.</p>
-		<p>See our letter grade evaluation alongside with the durability of that NFT in real time.</p>
+	<div class='p-4 mt-8'>
+		<h2 class='text-3xl heading mb-1'>How does Forever721 work?</h2>
+		<p class='mb-2'>The Forever721 browser extension shows you exactly what is in the NFT you see while browsing OpenSea.</p>
+		<p class='mb-2'>See our letter grade evaluation alongside with the durability of that NFT in real time.</p>
+	</div>
 
-		<!-- placeholder image -->
-		<img src="https://upload.wikimedia.org/wikipedia/en/0/07/Cryptopunks_general.jpg" />
+	<div class='p-4 w-full mb-8'>
+		<div class='flex flex-row justify-between items-center mb-4'>
+			<p class='w-1/2 text-5xl text-center heading text-blue-900'>A</p>
+
+			<div class='w-1/2'>
+				<p>The gold standard with on-chain metadata</p>
+			</div>
+		</div>
+
+		<div class='flex flex-row justify-between items-center mb-4'>
+			<p class='w-1/2 text-5xl text-center heading text-green-900'>B</p>
+
+			<div class='w-1/2'>
+				<p>Metadata stored on a decentralized storage solution like IPFS</p>
+			</div>
+		</div>
+
+		<div class='flex flex-row justify-between items-center mb-4'>
+			<p class='w-1/2 text-5xl text-center heading text-yellow-500'>C</p>
+
+			<div class='w-1/2'>
+				<p>Metadata may be stored durably but core properties may use non-best practices.</p>
+			</div>
+		</div>
+
+		<div class='flex flex-row justify-between items-center mb-4'>
+			<p class='w-1/2 text-5xl text-center heading text-orange-500'>D</p>
+
+			<div class='w-1/2'>
+				<p>Metadata properties point to privately-owned servers, and could change at any time.</p>
+			</div>
+		</div>
+
+		<div class='flex flex-row justify-between items-center mb-4'>
+			<p class='w-1/2 text-5xl text-center heading text-red-500'>F</p>
+
+			<div class='w-1/2'>
+				<p>Metadata points to privately-owned server and can change at any time.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class='text-center'>
+		<button class='bg-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'>Install Forever721 browser extension</button>
 	</div>
 </div>
