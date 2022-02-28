@@ -25,7 +25,7 @@
 		}
   }
 
-  async function fetchImage(_contractAddress: string, _tokenId: string) {
+  async function fetchImage(_contractAddress: string, _tokenId: string): Promise<void> {
     console.log("fetchImage()");
 
     try {
@@ -36,43 +36,52 @@
       });
 
       console.log("fetchImage result:", result);
+
       if (result && result.metadata && result.metadata.image) {
-        // https://ipfs.io/ipfs/bafybeibu3edpaeds5w2a23m6cnwlaakvqlvz3ywx4pl2m3i4iigynqdvuy/1870.png
+        const metaDataImageUrl = result.metadata.image;
 
         // If the image is an IPFS URL rewrite it to use the http:// gateway for display
-        if (result.metadata.image.startsWith('ipfs://')) {
-          let _imageUrl = result.metadata.image;
-
-          // "ipfs://bafybeibu3edpaeds5w2a23m6cnwlaakvqlvz3ywx4pl2m3i4iigynqdvuy/1870.png"
-          // https://rubular.com/r/fqjtInnQ9h3pqe
-          let ipfsRegex = /ipfs:\/\/(.+)/;
-          let [_, urlData] = ipfsRegex.exec(_imageUrl);
-
-          let rewrittenUrl = `https://ipfs.io/ipfs/${urlData}`
-
-          imageUrl = rewrittenUrl;
+        if (metaDataImageUrl.startsWith('ipfs://')) {
+          imageUrl = rewriteIpfsUrlToHttpGateway(metaDataImageUrl);
         }
         else {
-          imageUrl = result.metadata.image;
+          imageUrl = metaDataImageUrl;
         }
       }
     } catch (error) {
-      console.error("Error fetching image for ", url);
+      console.error("Error fetching image for contractAddress:", contractAddress, ", tokenId:", tokenId);
     }
   }
 
+  function rewriteIpfsUrlToHttpGateway(url: string): string {
+    // The image URL could be in the format: 
+    //
+    // ipfs://abcde...xyz/1234.png
+    //
+    // This won't display in the browser, so we need to rewrite it to the form
+    // https://ipfs.io/ipfs/abcde...xyz/1234.png
+    // 
+    let ipfsRegex = /ipfs:\/\/(.+)/;
+    let [_, urlData] = ipfsRegex.exec(url);
+
+    return `https://ipfs.io/ipfs/${urlData}`;
+  }
+
 	async function evaluateNft(openseaUrl: string): Promise<void> {
-    // TODO: Add try/catch here
     // TODO: reference this better
-    const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-    const result = await web3Alchemy.alchemy.getNftMetadata({
-      contractAddress: contractAddress,
-      tokenId: tokenId
-    });
+    try {
+      const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
+      const result = await web3Alchemy.alchemy.getNftMetadata({
+        contractAddress: contractAddress,
+        tokenId: tokenId
+      });
 
-    console.log(result);
+      console.log(result);
 
-    hasEvaluatedNft = true;
+      hasEvaluatedNft = true;
+    } catch (error) {
+      console.error("Error evaluating NFT");
+    }
 	}
 
   onMount(() => {
