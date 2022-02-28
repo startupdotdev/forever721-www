@@ -38,3 +38,15 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## ENV Vars
+
+Create a `.envrc` file with the following keys:
+
+- `VITE_ALCHEMY_API_URL`
+
+Allow the change:
+
+```
+$ direnv allow
+```
