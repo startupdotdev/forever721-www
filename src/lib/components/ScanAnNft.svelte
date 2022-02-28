@@ -1,23 +1,19 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import env from '$lib/constants/env';
 
   let hasEvaluatedNft: boolean = false;
-
-  // Default Azuki to display on load
-	let openseaUrl: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
-
+	let openseaUrl: string = '';
   let imageUrl: string = '';
   let contractAddress: string = '';
   let tokenId: string = '';
 
-  function openseaUrlPasted(e) {
-		let url = e.clipboardData.getData('text');
-
-    parseAndSetFromOpenseaUrl(url);
-    fetchOpenseaImage(contractAddress, tokenId);
+  function parseAndSetFromOpenseaUrl(url) {
+    parseValuesFromOpenseaUrl(url);
+    fetchImage(contractAddress, tokenId);
   }
 
-  function parseAndSetFromOpenseaUrl(url: string) {
+  function parseValuesFromOpenseaUrl(url: string) {
 		// https://opensea.io/assets/:nftContractAddress/:tokenId
 		let openseaAddressAndIdRe = /https:\/\/opensea.io\/assets\/(\w*)\/(\w*)/g;
 		let [_, address, id] = openseaAddressAndIdRe.exec(url);
@@ -29,8 +25,8 @@
 		}
   }
 
-  async function fetchOpenseaImage(_contractAddress: string, _tokenId: string) {
-    console.log("fetchimage");
+  async function fetchImage(_contractAddress: string, _tokenId: string) {
+    console.log("fetchImage()");
 
     try {
       const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
@@ -39,8 +35,26 @@
         tokenId: _tokenId
       });
 
+      console.log("fetchImage result:", result);
       if (result && result.metadata && result.metadata.image) {
-        imageUrl = result.metadata.image;
+        // https://ipfs.io/ipfs/bafybeibu3edpaeds5w2a23m6cnwlaakvqlvz3ywx4pl2m3i4iigynqdvuy/1870.png
+
+        // If the image is an IPFS URL rewrite it to use the http:// gateway for display
+        if (result.metadata.image.startsWith('ipfs://')) {
+          let _imageUrl = result.metadata.image;
+
+          // "ipfs://bafybeibu3edpaeds5w2a23m6cnwlaakvqlvz3ywx4pl2m3i4iigynqdvuy/1870.png"
+          // https://rubular.com/r/fqjtInnQ9h3pqe
+          let ipfsRegex = /ipfs:\/\/(.+)/;
+          let [_, urlData] = ipfsRegex.exec(_imageUrl);
+
+          let rewrittenUrl = `https://ipfs.io/ipfs/${urlData}`
+
+          imageUrl = rewrittenUrl;
+        }
+        else {
+          imageUrl = result.metadata.image;
+        }
       }
     } catch (error) {
       console.error("Error fetching image for ", url);
@@ -60,6 +74,12 @@
 
     hasEvaluatedNft = true;
 	}
+
+  onMount(() => {
+    // Default Azuki to display on load
+    let url: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
+    parseAndSetFromOpenseaUrl(url);
+  })
 </script>
 
 {#if hasEvaluatedNft === false}
@@ -76,12 +96,12 @@
       <p class='mb-1'>OpenSea URL</p>
       <input
         class='border border-gray-400 rounded px-2 py-1 w-full'
-        on:paste={(e) => openseaUrlPasted(e)}
+        on:paste={(e) => parseAndSetFromOpenseaUrl(e.clipboardData.getData('text'))}
         value={openseaUrl}
       />
     </div>
 
-    <div class='border border-t-1 border-gray-400 my-6'></div>
+    <div class='border border-t-1 border-gray-600 my-6'></div>
 
     <div class='mb-4'>
       <p class='mb-1'>NFT Contract Address</p>
