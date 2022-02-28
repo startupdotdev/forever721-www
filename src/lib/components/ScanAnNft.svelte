@@ -1,8 +1,23 @@
 <script lang="ts">
+  import env from '$lib/constants/env';
+
 	let openseaUrl: string = '';
 
 	async function evaluateNft(openseaUrl: string): Promise<void> {
 		console.log("boop");
+
+    const url = "https://opensea.io/assets/0x219b8ab790decc32444a6600971c7c3718252539/1870";
+    const contractAddress = "0x5180db8F5c931aaE63c74266b211F580155ecac8";
+    const tokenId = "1590";
+
+    // TODO: reference this better
+    const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
+    const result = await web3Alchemy.alchemy.getNftMetadata({
+      contractAddress: contractAddress,
+      tokenId: tokenId
+    });
+
+    console.log(result);
 	}
 </script>
 
