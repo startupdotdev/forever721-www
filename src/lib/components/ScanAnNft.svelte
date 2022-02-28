@@ -8,7 +8,7 @@
   let contractAddress: string = '';
   let tokenId: string = '';
 
-  function parseAndSetFromOpenseaUrl(url) {
+  function parseAndSetFromOpenseaUrl(url: string) {
     parseValuesFromOpenseaUrl(url);
     fetchImage(contractAddress, tokenId);
   }
@@ -29,6 +29,8 @@
     console.log("fetchImage()");
 
     try {
+      imageUrl = '';
+
       const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
       const result = await web3Alchemy.alchemy.getNftMetadata({
         contractAddress: _contractAddress,
@@ -37,9 +39,9 @@
 
       console.log("fetchImage result:", result);
 
-      if (result && result.metadata && result.metadata.image) {
-        const metaDataImageUrl = result.metadata.image;
+      const metaDataImageUrl = result?.metadata?.image;
 
+      if (metaDataImageUrl) {
         // If the image is an IPFS URL rewrite it to use the http:// gateway for display
         if (metaDataImageUrl.startsWith('ipfs://')) {
           imageUrl = rewriteIpfsUrlToHttpGateway(metaDataImageUrl);
