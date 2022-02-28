@@ -84,6 +84,13 @@
     }
 	}
 
+  function clearInputFields() {
+    openseaUrl = '';
+    contractAddress = '';
+    tokenId = '';
+    imageUrl = '';
+  }
+
   onMount(() => {
     // Default Azuki to display on load
     let url: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
@@ -110,12 +117,17 @@
       />
     </div>
 
-    <div class='border border-t-1 border-gray-600 my-6'></div>
+    <div class='flex flex-row items-center my-2'>
+      <div class='border border-t-1 border-gray-300 my-6 flex-grow'></div>
+      <p class='mx-2 text-gray-600'>Or</p>
+      <div class='border border-t-1 border-gray-300 my-6 flex-grow'></div>
+    </div>
 
     <div class='mb-4'>
       <p class='mb-1'>NFT Contract Address</p>
       <input
         class='border border-gray-400 rounded px-2 py-1 w-full'
+        on:change={(e) => parseAndSetFromOpenseaUrl(e.EventTarget.value)}
         value={contractAddress}
       />
     </div>
@@ -130,9 +142,17 @@
 
     <input
       class:disabled={true}
-      class='w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'
+      class='w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mt-4 mb-4'
       type="submit"
       value="Analyze NFT"
+    />
+
+    <input
+      class:disabled={true}
+      class='w-full bg-white border border-gray-500 text-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'
+      type="submit"
+      value="Clear Fields"
+      on:click|preventDefault={() => clearInputFields()}
     />
   </form>
 {:else}
