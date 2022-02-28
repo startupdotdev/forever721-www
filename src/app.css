@@ -4,10 +4,14 @@
 
 @tailwind base;
 
-body {
-  @apply bg-red-900;
+@tailwind components;
+
+html {
+	font-family: 'Fira Sans', sans-serif;
 }
 
-@tailwind components;
+.heading {
+	font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
 
 @tailwind utilities;
