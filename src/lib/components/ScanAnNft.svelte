@@ -3,7 +3,7 @@
   import env from '$lib/constants/env';
 
   let hasEvaluatedNft: boolean = false;
-	let openseaUrl: string = '';
+  let openseaUrl: string = '';
   let imageUrl: string = '';
   let contractAddress: string = '';
   let tokenId: string = '';
@@ -54,11 +54,10 @@
   }
 
   function rewriteIpfsUrlToHttpGateway(url: string): string {
-    // The image URL could be in the format: 
-    //
+    // Rewrites:
     // ipfs://abcde...xyz/1234.png
     //
-    // This won't display in the browser, so we need to rewrite it to the form
+    // To:
     // https://ipfs.io/ipfs/abcde...xyz/1234.png
     // 
     let ipfsRegex = /ipfs:\/\/(.+)/;
