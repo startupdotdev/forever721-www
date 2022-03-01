@@ -5,3 +5,11 @@ interface OpenseaDataParse {
   contractAddress: string;
   tokenId: string;
 }
+
+interface Nft {
+  metadata: NftMetadata;
+}
+
+interface NftMetadata {
+  image?: string;
+}

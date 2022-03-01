@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import env from '$lib/constants/env';
-  import { parseOpenseaUrl } from '$lib/utils/opensea.ts';
+  import { parseOpenseaUrl } from '$lib/utils/opensea';
 
   let hasEvaluatedNft: boolean = false;
   let openseaUrl: string = '';
@@ -17,25 +17,25 @@
       contractAddress = result.contractAddress;
       tokenId = result.tokenId;
 
-      fetchImage(contractAddress, tokenId);
+      fetchMetadata(contractAddress, tokenId);
     }
   }
 
-  async function fetchImage(_contractAddress: string, _tokenId: string): Promise<void> {
-    console.log("fetchImage()");
+  async function fetchMetadata(_contractAddress: string, _tokenId: string): Promise<void> {
+    console.log("fetchMetadata()");
 
     try {
       imageUrl = '';
 
       const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-      const result = await web3Alchemy.alchemy.getNftMetadata({
+      const nft: Nft = await web3Alchemy.alchemy.getNftMetadata({
         contractAddress: _contractAddress,
         tokenId: _tokenId
       });
 
-      console.log("fetchImage result:", result);
+      console.log("fetchMetadata result:", nft);
 
-      const metaDataImageUrl = result?.metadata?.image;
+      const metaDataImageUrl = nft?.metadata?.image;
 
       if (metaDataImageUrl) {
         // If the image is an IPFS URL rewrite it to use the http:// gateway for display
@@ -91,7 +91,7 @@
   onMount(() => {
     // Default Azuki to display on load
     let url: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
-    parseAndSetFromOpenseaUrl(url);
+    openseaUrlPasted(url);
   })
 </script>
 
