@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import env from '$lib/constants/env';
+  import { parseOpenseaUrl } from '$lib/utils/opensea.ts';
 
   let hasEvaluatedNft: boolean = false;
   let openseaUrl: string = '';
@@ -8,21 +9,16 @@
   let contractAddress: string = '';
   let tokenId: string = '';
 
-  function parseAndSetFromOpenseaUrl(url: string) {
-    parseValuesFromOpenseaUrl(url);
-    fetchImage(contractAddress, tokenId);
-  }
+  function openseaUrlPasted(url: string) {
+    const result: OpenseaDataParse = parseOpenseaUrl(url);
 
-  function parseValuesFromOpenseaUrl(url: string) {
-		// https://opensea.io/assets/:nftContractAddress/:tokenId
-		let openseaAddressAndIdRe = /https:\/\/opensea.io\/assets\/(\w*)\/(\w*)/g;
-		let [_, address, id] = openseaAddressAndIdRe.exec(url);
+    if (result) {
+      openseaUrl = result.url;
+      contractAddress = result.contractAddress;
+      tokenId = result.tokenId;
 
-		if (address && id) {
-			openseaUrl = url;
-			contractAddress = address;
-			tokenId = id;
-		}
+      fetchImage(contractAddress, tokenId);
+    }
   }
 
   async function fetchImage(_contractAddress: string, _tokenId: string): Promise<void> {
@@ -113,7 +109,7 @@
       <p class='mb-1'>OpenSea URL</p>
       <input
         class='border border-gray-400 rounded px-2 py-1 w-full'
-        on:paste={(e) => parseAndSetFromOpenseaUrl(e.clipboardData.getData('text'))}
+        on:paste={(e) => openseaUrlPasted(e.clipboardData.getData('text'))}
         value={openseaUrl}
       />
     </div>
@@ -128,7 +124,7 @@
       <p class='mb-1'>NFT Contract Address</p>
       <input
         class='border border-gray-400 rounded px-2 py-1 w-full'
-        on:change={(e) => parseAndSetFromOpenseaUrl(e.EventTarget.value)}
+        on:change={(e) => true }
         value={contractAddress}
       />
     </div>
