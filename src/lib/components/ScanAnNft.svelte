@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import env from '$lib/constants/env';
   import { parseOpenseaUrl } from '$lib/utils/opensea';
+  import { displayableIpfsUrl } from '$lib/utils/ipfs';
 
   let hasEvaluatedNft: boolean = false;
   let openseaUrl: string = '';
@@ -37,31 +38,12 @@
 
       const metaDataImageUrl = nft?.metadata?.image;
 
-      if (metaDataImageUrl) {
-        // If the image is an IPFS URL rewrite it to use the http:// gateway for display
-        if (metaDataImageUrl.startsWith('ipfs://')) {
-          imageUrl = rewriteIpfsUrlToHttpGateway(metaDataImageUrl);
-        }
-        else {
-          imageUrl = metaDataImageUrl;
-        }
+      if (metaDataImageUrl)  {
+        imageUrl = displayableIpfsUrl(metaDataImageUrl);
       }
     } catch (error) {
       console.error("Error fetching image for contractAddress:", contractAddress, ", tokenId:", tokenId);
     }
-  }
-
-  function rewriteIpfsUrlToHttpGateway(url: string): string {
-    // Rewrites:
-    // ipfs://abcde...xyz/1234.png
-    //
-    // To:
-    // https://ipfs.io/ipfs/abcde...xyz/1234.png
-    // 
-    let ipfsRegex = /ipfs:\/\/(.+)/;
-    let [_, urlData] = ipfsRegex.exec(url);
-
-    return `https://ipfs.io/ipfs/${urlData}`;
   }
 
 	async function evaluateNft(openseaUrl: string): Promise<void> {
