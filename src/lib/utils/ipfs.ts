@@ -1,5 +1,5 @@
 export function displayableIpfsUrl(url: string): string {
-  if (url.startsWith('ipfs://') === false) {
+  if (!url || url.startsWith('ipfs://') === false) {
     return url;
   }
 

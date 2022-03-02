@@ -5,11 +5,14 @@
   import { displayableIpfsUrl } from '$lib/utils/ipfs';
 
   let hasEvaluatedNft: boolean = false;
+
   let openseaUrl: string = '';
-  let imageUrl: string = '';
   let contractAddress: string = '';
   let tokenId: string = '';
 
+  let currentMetadata: NftMetadata;
+  $: displayableImage = displayableIpfsUrl(currentMetadata?.image);
+  
   function openseaUrlPasted(url: string) {
     const result: OpenseaDataParse = parseOpenseaUrl(url);
 
@@ -25,7 +28,7 @@
   async function getNftMetadata(_contractAddress: string, _tokenId: string): Promise<Nft> {
     // TODO: reference this better
     const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-    
+
     return await web3Alchemy.alchemy.getNftMetadata({
       contractAddress: _contractAddress,
       tokenId: _tokenId
@@ -36,17 +39,13 @@
     console.log("loadMetadata()");
 
     try {
-      imageUrl = '';
+      currentMetadata = null;
 
       const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);      
-      
+
       console.log("loadMetadata result:", nft);
 
-      const metaDataImageUrl = nft?.metadata?.image;
-
-      if (metaDataImageUrl)  {
-        imageUrl = displayableIpfsUrl(metaDataImageUrl);
-      }
+      currentMetadata = nft.metadata;
     } catch (error) {
       console.error("Error fetching image for contractAddress:", contractAddress, ", tokenId:", tokenId);
     }
@@ -68,7 +67,6 @@
     openseaUrl = '';
     contractAddress = '';
     tokenId = '';
-    imageUrl = '';
   }
 
   onMount(() => {
@@ -79,12 +77,16 @@
 </script>
 
 {#if hasEvaluatedNft === false}
-  {#if imageUrl}
-   <img src={imageUrl} class='w-full mb-8 rounded' />
+  {#if currentMetadata}
+   <img src={displayableImage} class='w-full mb-4 rounded' />
   {:else}
-    <div class='bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-8'>
+    <div class='bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4'>
       <svg xmlns="http://www.w3.org/2000/svg" class="text-white h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
     </div>
+  {/if}
+
+  {#if currentMetadata}
+    <p class='text-xl font-bold mb-8'>{currentMetadata.name}</p>
   {/if}
 
   <form on:submit|preventDefault={() => evaluateNft('hi', 'hi') }>
@@ -137,7 +139,7 @@
   </form>
 {:else}
   <!-- TODO: what if no image? -->
-  <img src={imageUrl} class='w-full mb-8 rounded' />
+  <img src={currentMetadata.image} class='w-full mb-8 rounded' />
   <p> your nft</p>
   <button
     on:click|preventDefault={ () => hasEvaluatedNft = false }

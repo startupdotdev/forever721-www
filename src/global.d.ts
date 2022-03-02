@@ -11,5 +11,6 @@ interface Nft {
 }
 
 interface NftMetadata {
+  name?: string;
   image?: string;
 }
