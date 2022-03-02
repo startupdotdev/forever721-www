@@ -18,23 +18,29 @@
       contractAddress = result.contractAddress;
       tokenId = result.tokenId;
 
-      fetchMetadata(contractAddress, tokenId);
+      loadMetadata(contractAddress, tokenId);
     }
   }
 
-  async function fetchMetadata(_contractAddress: string, _tokenId: string): Promise<void> {
-    console.log("fetchMetadata()");
+  async function getNftMetadata(_contractAddress: string, _tokenId: string): Promise<Nft> {
+    // TODO: reference this better
+    const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
+    
+    return await web3Alchemy.alchemy.getNftMetadata({
+      contractAddress: _contractAddress,
+      tokenId: _tokenId
+    });
+  }
+
+  async function loadMetadata(_contractAddress: string, _tokenId: string): Promise<void> {
+    console.log("loadMetadata()");
 
     try {
       imageUrl = '';
 
-      const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-      const nft: Nft = await web3Alchemy.alchemy.getNftMetadata({
-        contractAddress: _contractAddress,
-        tokenId: _tokenId
-      });
-
-      console.log("fetchMetadata result:", nft);
+      const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);      
+      
+      console.log("loadMetadata result:", nft);
 
       const metaDataImageUrl = nft?.metadata?.image;
 
@@ -47,15 +53,10 @@
   }
 
 	async function evaluateNft(openseaUrl: string): Promise<void> {
-    // TODO: reference this better
     try {
-      const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-      const result = await web3Alchemy.alchemy.getNftMetadata({
-        contractAddress: contractAddress,
-        tokenId: tokenId
-      });
+      // const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);      
 
-      console.log(result);
+      // console.log(result);
 
       hasEvaluatedNft = true;
     } catch (error) {

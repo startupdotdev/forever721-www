@@ -1,4 +1,3 @@
-
 export function parseOpenseaUrl(url: string): OpenseaDataParse | null {
   // https://opensea.io/assets/:nftContractAddress/:tokenId
   let openseaAddressAndIdRe = /https:\/\/opensea.io\/assets\/(\w*)\/(\w*)/g;
