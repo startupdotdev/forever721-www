@@ -14,3 +14,16 @@ interface NftMetadata {
   name?: string;
   image?: string;
 }
+
+// TODO: Export this from forever721 package 
+
+interface Grade {
+  grade: GradeLetter;
+  reasons: Reason[];
+}
+
+interface Reason {
+  id: string;
+  severity: Severity;
+  message: string;
+}

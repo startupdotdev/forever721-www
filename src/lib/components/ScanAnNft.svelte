@@ -3,6 +3,7 @@
   import env from '$lib/constants/env';
   import { parseOpenseaUrl } from '$lib/utils/opensea';
   import { displayableIpfsUrl } from '$lib/utils/ipfs';
+  import NftAnalysis from '$lib/components/NftAnalysis.svelte';
 
   let hasEvaluatedNft: boolean = false;
 
@@ -51,12 +52,13 @@
     }
   }
 
-	async function evaluateNft(openseaUrl: string): Promise<void> {
+	async function evaluateNft(): Promise<void> {
     try {
-      // const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);      
+      const nft: Nft = await getNftMetadata(contractAddress, tokenId);      
 
-      // console.log(result);
+      console.log(nft);
 
+      currentMetadata = nft.metadata;
       hasEvaluatedNft = true;
     } catch (error) {
       console.error("Error evaluating NFT");
@@ -89,7 +91,7 @@
     <p class='text-xl font-bold mb-8'>{currentMetadata.name}</p>
   {/if}
 
-  <form on:submit|preventDefault={() => evaluateNft('hi', 'hi') }>
+  <form on:submit|preventDefault={() => evaluateNft()}>
     <div class='mb-4'>
       <p class='mb-1'>OpenSea URL</p>
       <input
@@ -123,14 +125,12 @@
     </div>
 
     <input
-      class:disabled={true}
       class='w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mt-4 mb-4'
       type="submit"
       value="Analyze NFT"
     />
 
     <input
-      class:disabled={true}
       class='w-full bg-white border border-gray-500 text-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'
       type="submit"
       value="Clear Fields"
@@ -138,13 +138,8 @@
     />
   </form>
 {:else}
-  <!-- TODO: what if no image? -->
-  <img src={currentMetadata.image} class='w-full mb-8 rounded' />
-  <p> your nft</p>
-  <button
-    on:click|preventDefault={ () => hasEvaluatedNft = false }
-    class='w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8'
-  >
-    Analyze Another NFT
-  </button>
+  <NftAnalysis
+    metadata={currentMetadata}
+    clear={ () => hasEvaluatedNft = false }
+  />
 {/if}
