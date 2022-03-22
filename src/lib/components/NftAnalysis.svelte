@@ -5,7 +5,10 @@
 	import { analyzeTokenUri } from '@startupdotdev/forever721';
 	import defaultAbi from '../../config/defaultAbi';
 
-	import type { Grade, Reason } from '@startupdotdev/forever721';
+	import type { Grade } from '@startupdotdev/forever721';
+
+	// TODO: Use the constant import
+	// import { GradeLetter } from '@startupdotdev/forever721';
 
 	export let contractAddress: string;
 	export let tokenId: string;
@@ -13,15 +16,9 @@
 
 	let tokenUri: string;
 	let metadata: NftMetadata;
+	let evaluation: Grade;
 
 	$: displayableImage = displayableIpfsUrl(metadata?.image);
-
-	let grade: Grade = {
-		grade: 'A',
-		reasons: []
-	};
-
-	// TODO: get the analysis object and put it in the form
 
 	async function getNftTokenUri(_contractAddress: string, _tokenId: string): Promise<string> {
 		// TODO: reference this better
@@ -58,8 +55,8 @@
 		tokenUri = await getNftTokenUri(contractAddress, tokenId);
 		console.log('analyze tokenUri');
 
-		const result = await analyzeTokenUri(tokenUri);
-		console.log('analyze result', result);
+		evaluation = await analyzeTokenUri(tokenUri);
+		console.log('analyze evaluation', evaluation);
 
 		// TODO: if the package also returned the metadata, we wouldn't have to fetch this again
 		const nft: Nft = await getNftMetadata(contractAddress, tokenId);
@@ -92,12 +89,30 @@
 		<p class="text-xl font-bold mb-8">{metadata.name}</p>
 	{/if}
 
-	<p class="heading mb-8">Analysis</p>
+	{#if evaluation}
+		<p class="heading">Overall Grade</p>
 
-	<div class="grid">
-		<p>We give this NFT an overall grade of</p>
-		<p>A</p>
-	</div>
+		<p
+			class="text-6xl heading mb-4"
+			class:text-blue-900={evaluation.grade === 'A'}
+			class:text-green-900={evaluation.grade === 'B'}
+			class:text-yellow-500={evaluation.grade === 'C'}
+			class:text-orange-500={evaluation.grade === 'D'}
+			class:text-red-500={evaluation.grade === 'F'}
+		>
+			{evaluation.grade}
+		</p>
+
+		<p class="heading">Grade Reasons:</p>
+
+		<ul class="list-disc mb-12">
+			{#each evaluation.reasons as reason}
+				<li class="ml-8 mt-2">{reason.message}</li>
+			{/each}
+		</ul>
+	{:else}
+		<p class="heading mb-12">Loading Analysis...</p>
+	{/if}
 
 	<button
 		on:click|preventDefault={clear()}
