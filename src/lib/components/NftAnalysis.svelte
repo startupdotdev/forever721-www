@@ -1,22 +1,70 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import env from '$lib/constants/env';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
 	import { analyzeTokenUri } from '@startupdotdev/forever721';
+	import defaultAbi from '../../config/defaultAbi';
 
-	export let metadata: NftMetadata;
+	import type { Grade, Reason } from '@startupdotdev/forever721';
+
+	export let contractAddress: string;
+	export let tokenId: string;
 	export let clear: Function;
 
-	$: displayableImage = displayableIpfsUrl(metadata?.image);
+	let tokenUri: string;
+	let metadata: NftMetadata;
 
-	// TODO: use package here
-	// const analysis = analyzeTokenUri(metadata);
+	$: displayableImage = displayableIpfsUrl(metadata?.image);
 
 	let grade: Grade = {
 		grade: 'A',
 		reasons: []
 	};
 
-	console.log(metadata);
-	analyzeTokenUri(metadata);
+	// TODO: get the analysis object and put it in the form
+
+	async function getNftTokenUri(_contractAddress: string, _tokenId: string): Promise<string> {
+		// TODO: reference this better
+		const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
+
+		const basicNftContract = new web3Alchemy.eth.Contract(
+			defaultAbi,
+			_contractAddress,
+			web3Alchemy.Provider
+		);
+
+		// TODO: try/catch ?
+		const result = await basicNftContract.methods.tokenURI(_tokenId).call();
+
+		console.log('result tokenURI', result);
+
+		return result;
+	}
+
+	// TODO: Duplicate with ScanAnNft
+	async function getNftMetadata(_contractAddress: string, _tokenId: string): Promise<Nft> {
+		// TODO: reference this better
+		const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
+
+		return await web3Alchemy.alchemy.getNftMetadata({
+			contractAddress: _contractAddress,
+			tokenId: _tokenId
+		});
+	}
+
+	onMount(async () => {
+		console.log('onMount analyze');
+
+		tokenUri = await getNftTokenUri(contractAddress, tokenId);
+		console.log('analyze tokenUri');
+
+		const result = await analyzeTokenUri(tokenUri);
+		console.log('analyze result', result);
+
+		// TODO: if the package also returned the metadata, we wouldn't have to fetch this again
+		const nft: Nft = await getNftMetadata(contractAddress, tokenId);
+		metadata = nft.metadata;
+	});
 </script>
 
 <div>
