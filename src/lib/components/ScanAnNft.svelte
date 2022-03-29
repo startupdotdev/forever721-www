@@ -71,53 +71,59 @@
 </script>
 
 {#if isEvaluatingNft === false}
-	{#if currentMetadata}
-		<img src={displayableImage} class="w-full mb-4 rounded" />
-	{:else}
-		<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="text-white h-16 w-16"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-				/></svg
-			>
-		</div>
-	{/if}
-
-	{#if currentMetadata}
-		<p class="text-xl font-bold mb-8">{currentMetadata.name}</p>
-	{/if}
-
-	<form on:submit|preventDefault={() => (isEvaluatingNft = true)}>
-		<div class="mb-4">
-			<p class="mb-1">OpenSea URL</p>
-			<input
-				class="border border-gray-400 rounded px-2 py-1 w-full"
-				on:paste={(e) => openseaUrlPasted(e.clipboardData.getData('text'))}
-				value={openseaUrl}
-			/>
+	<div class="md:flex md:flex-row md:items-center">
+		<div class="md:w-1/2">
+			{#if currentMetadata}
+				<img src={displayableImage} class="w-full mb-4 rounded" />
+			{:else}
+				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="text-white h-16 w-16"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+						/></svg
+					>
+				</div>
+			{/if}
 		</div>
 
-		<input
-			class="w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mt-4 mb-4"
-			type="submit"
-			value="Analyze NFT"
-		/>
+		<div class="md:w-1/2 md:ml-4 lg:ml-12">
+			{#if currentMetadata}
+				<p class="text-xl font-bold mb-8">{currentMetadata.name}</p>
+			{/if}
 
-		<input
-			class="w-full bg-white border border-gray-500 text-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8"
-			type="submit"
-			value="Clear"
-			on:click|preventDefault={() => clearInputFields()}
-		/>
-	</form>
+			<form on:submit|preventDefault={() => (isEvaluatingNft = true)}>
+				<div class="mb-4">
+					<p class="mb-1">OpenSea URL</p>
+					<input
+						class="border border-gray-400 rounded px-2 py-1 w-full"
+						on:paste={(e) => openseaUrlPasted(e.clipboardData.getData('text'))}
+						value={openseaUrl}
+					/>
+				</div>
+
+				<input
+					class="w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mt-4 mb-4"
+					type="submit"
+					value="Analyze NFT"
+				/>
+
+				<input
+					class="w-full text-gray-900 rounded-full mb-8 mt-2"
+					type="submit"
+					value="Clear"
+					on:click|preventDefault={() => clearInputFields()}
+				/>
+			</form>
+		</div>
+	</div>
 {:else}
 	<NftAnalysis {contractAddress} {tokenId} clear={() => (isEvaluatingNft = false)} />
 {/if}
