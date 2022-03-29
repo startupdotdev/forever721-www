@@ -105,26 +105,6 @@
 			/>
 		</div>
 
-		<div class="flex flex-row items-center my-2">
-			<div class="border border-t-1 border-gray-300 my-6 flex-grow" />
-			<p class="mx-2 text-gray-600">Or</p>
-			<div class="border border-t-1 border-gray-300 my-6 flex-grow" />
-		</div>
-
-		<div class="mb-4">
-			<p class="mb-1">NFT Contract Address</p>
-			<input
-				class="border border-gray-400 rounded px-2 py-1 w-full"
-				on:change={(e) => true}
-				value={contractAddress}
-			/>
-		</div>
-
-		<div class="mb-4">
-			<p class="mb-1">Token ID</p>
-			<input class="border border-gray-400 rounded px-2 py-1 w-full" value={tokenId} />
-		</div>
-
 		<input
 			class="w-full bg-gray-900 rounded-full text-white px-8 py-4 border border-white mt-4 mb-4"
 			type="submit"
@@ -134,7 +114,7 @@
 		<input
 			class="w-full bg-white border border-gray-500 text-gray-900 rounded-full text-white px-8 py-4 border border-white mb-8"
 			type="submit"
-			value="Clear Fields"
+			value="Clear"
 			on:click|preventDefault={() => clearInputFields()}
 		/>
 	</form>
