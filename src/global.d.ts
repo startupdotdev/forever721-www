@@ -1,16 +1,16 @@
 /// <reference types="@sveltejs/kit" />
 
 interface OpenseaDataParse {
-  url: string;
-  contractAddress: string;
-  tokenId: string;
+	url: string;
+	contractAddress: string;
+	tokenId: string;
 }
 
 interface Nft {
-  metadata: NftMetadata;
+	metadata: NftMetadata;
 }
 
 interface NftMetadata {
-  name?: string;
-  image?: string;
+	name?: string;
+	image?: string;
 }
