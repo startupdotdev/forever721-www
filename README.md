@@ -43,7 +43,7 @@ You can preview the production build with `npm run preview`.
 
 Create a `.envrc` file with the following keys:
 
-- `VITE_ALCHEMY_API_URL`
+- `ALCHEMY_API_KEY`
 
 Allow the change:
 
