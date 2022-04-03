@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import env from '$lib/constants/env';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
 	import { analyzeTokenUri } from '@startupdotdev/forever721';
-	import defaultAbi from '../../config/defaultAbi';
+	import { getNftMetadata, getNftTokenUri } from '$lib/utils/alchemy';
 
+	import type { Nft, NftMetadata } from 'src/global';
 	import type { Grade } from '@startupdotdev/forever721';
-
-	// TODO: Use the constant import
-	// import { GradeLetter } from '@startupdotdev/forever721';
 
 	export let contractAddress: string;
 	export let tokenId: string;
@@ -19,35 +16,6 @@
 	let evaluation: Grade;
 
 	$: displayableImage = displayableIpfsUrl(metadata?.image);
-
-	async function getNftTokenUri(_contractAddress: string, _tokenId: string): Promise<string> {
-		// TODO: reference this better
-		const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-
-		const basicNftContract = new web3Alchemy.eth.Contract(
-			defaultAbi,
-			_contractAddress,
-			web3Alchemy.Provider
-		);
-
-		// TODO: try/catch ?
-		const result = await basicNftContract.methods.tokenURI(_tokenId).call();
-
-		console.log('result tokenURI', result);
-
-		return result;
-	}
-
-	// TODO: Duplicate with ScanAnNft
-	async function getNftMetadata(_contractAddress: string, _tokenId: string): Promise<Nft> {
-		// TODO: reference this better
-		const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-
-		return await web3Alchemy.alchemy.getNftMetadata({
-			contractAddress: _contractAddress,
-			tokenId: _tokenId
-		});
-	}
 
 	onMount(async () => {
 		console.log('onMount analyze');
