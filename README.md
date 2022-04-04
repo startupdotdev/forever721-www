@@ -18,6 +18,14 @@ npm init svelte@next my-app
 
 ## Developing
 
+### Node version
+
+Note: this project uses the [experimental native fetch](https://github.com/nodejs/node/commit/6ec225392675c92b102d3caad02ee3a157c9d1b7) in Node 17.
+
+```
+$ nvm install 17.8.0 --experimental-fetch
+```
+
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
 ```bash
