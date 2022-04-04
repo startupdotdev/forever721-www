@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import env from '$lib/constants/env';
 	import { parseOpenseaUrl } from '$lib/utils/opensea';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
 	import NftAnalysis from '$lib/components/NftAnalysis.svelte';
+	import { getNftMetadata } from '$lib/utils/alchemy';
+	import type { Nft, NftMetadata, OpenseaDataParse } from 'src/global';
 
 	let isEvaluatingNft: boolean = false;
 
@@ -24,16 +25,6 @@
 
 			loadMetadata(contractAddress, tokenId);
 		}
-	}
-
-	async function getNftMetadata(_contractAddress: string, _tokenId: string): Promise<Nft> {
-		// TODO: reference this better
-		const web3Alchemy = AlchemyWeb3.createAlchemyWeb3(env.alchemyApiKey);
-
-		return await web3Alchemy.alchemy.getNftMetadata({
-			contractAddress: _contractAddress,
-			tokenId: _tokenId
-		});
 	}
 
 	async function loadMetadata(_contractAddress: string, _tokenId: string): Promise<void> {

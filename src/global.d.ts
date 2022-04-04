@@ -1,5 +1,7 @@
 /// <reference types="@sveltejs/kit" />
 
+import type { TokenUri } from '@alch/alchemy-web3';
+
 interface OpenseaDataParse {
 	url: string;
 	contractAddress: string;
@@ -8,6 +10,7 @@ interface OpenseaDataParse {
 
 interface Nft {
 	metadata: NftMetadata;
+	tokenUri: TokenUri;
 }
 
 interface NftMetadata {
