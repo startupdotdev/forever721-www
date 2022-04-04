@@ -21,5 +21,5 @@ export async function getNftTokenUri(contractAddress: string, tokenId: string): 
 	console.log('alchemyResponse', alchemyResponse);
 
 	// TODO: probably better error handling here
-	return alchemyResponse.tokenUri.gateway;
+	return alchemyResponse.tokenUri.raw;
 }
