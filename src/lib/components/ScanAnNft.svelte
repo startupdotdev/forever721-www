@@ -4,7 +4,7 @@
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
 	import NftAnalysis from '$lib/components/NftAnalysis.svelte';
 	import { getNftMetadata } from '$lib/utils/alchemy';
-	import type { Nft, NftMetadata, OpenseaDataParse } from 'src/global';
+	import type { Nft, OpenseaDataParse } from 'src/global';
 
 	let isEvaluatingNft: boolean = false;
 
@@ -12,13 +12,14 @@
 	let contractAddress: string = '';
 	let tokenId: string = '';
 
-	let currentMetadata: NftMetadata;
-	$: displayableImage = displayableIpfsUrl(currentMetadata?.image);
+	let nft: Nft;
+	$: displayableImage = displayableIpfsUrl(nft?.metadata?.image);
+	$: name = nft?.metadata?.name || `#${nft?.id?.tokenId}`;
 
 	function evaluateOpenseaUrl(url: string) {
 		const result: OpenseaDataParse = parseOpenseaUrl(url);
 
-		currentMetadata = null;
+		nft = null;
 		contractAddress = '';
 		tokenId = '';
 
@@ -35,13 +36,13 @@
 		console.log('loadMetadata()');
 
 		try {
-			currentMetadata = null;
+			nft = null;
 
-			const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);
+			const nftData: Nft = await getNftMetadata(_contractAddress, _tokenId);
 
-			console.log('loadMetadata result:', nft);
+			console.log('loadMetadata result:', nftData);
 
-			currentMetadata = nft.metadata;
+			nft = nftData;
 		} catch (error) {
 			console.error(
 				'Error fetching image for contractAddress:',
@@ -78,7 +79,7 @@
 {#if isEvaluatingNft === false}
 	<div class="md:flex md:flex-row md:items-center">
 		<div class="md:w-1/2">
-			{#if currentMetadata}
+			{#if nft}
 				<img src={displayableImage} class="w-full mb-4 rounded" />
 			{:else}
 				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center items-center mb-4">
@@ -100,8 +101,8 @@
 		</div>
 
 		<div class="md:w-1/2 md:ml-4 lg:ml-12">
-			{#if currentMetadata}
-				<p class="text-xl font-bold mb-8">{currentMetadata.name}</p>
+			{#if nft}
+				<p class="text-xl font-bold mb-8">{name}</p>
 			{/if}
 
 			<form on:submit|preventDefault={onSubmit}>

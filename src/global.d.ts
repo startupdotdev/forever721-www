@@ -8,7 +8,12 @@ interface OpenseaDataParse {
 	tokenId: string;
 }
 
+interface MetadataId {
+	tokenId: string;
+}
+
 interface Nft {
+	id: MetadataId;
 	metadata: NftMetadata;
 	tokenUri: TokenUri;
 }
