@@ -15,8 +15,12 @@
 	let currentMetadata: NftMetadata;
 	$: displayableImage = displayableIpfsUrl(currentMetadata?.image);
 
-	function openseaUrlPasted(url: string) {
+	function evaluateOpenseaUrl(url: string) {
 		const result: OpenseaDataParse = parseOpenseaUrl(url);
+
+		currentMetadata = null;
+		contractAddress = '';
+		tokenId = '';
 
 		if (result) {
 			openseaUrl = result.url;
@@ -48,6 +52,16 @@
 		}
 	}
 
+	function onSubmit() {
+		evaluateOpenseaUrl(openseaUrl);
+		isEvaluatingNft = true;
+	}
+
+	function onInputChange(e) {
+		openseaUrl = e.target.value;
+		evaluateOpenseaUrl(openseaUrl);
+	}
+
 	function clearInputFields() {
 		openseaUrl = '';
 		contractAddress = '';
@@ -57,7 +71,7 @@
 	onMount(() => {
 		// Default Azuki to display on load
 		let url: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
-		openseaUrlPasted(url);
+		evaluateOpenseaUrl(url);
 	});
 </script>
 
@@ -67,7 +81,7 @@
 			{#if currentMetadata}
 				<img src={displayableImage} class="w-full mb-4 rounded" />
 			{:else}
-				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4">
+				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center items-center mb-4">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="text-white h-16 w-16"
@@ -90,13 +104,13 @@
 				<p class="text-xl font-bold mb-8">{currentMetadata.name}</p>
 			{/if}
 
-			<form on:submit|preventDefault={() => (isEvaluatingNft = true)}>
+			<form on:submit|preventDefault={onSubmit}>
 				<div class="mb-4">
 					<p class="mb-1">OpenSea URL</p>
 					<input
 						class="border border-gray-400 rounded px-2 py-1 w-full"
-						on:paste={(e) => openseaUrlPasted(e.clipboardData.getData('text'))}
-						value={openseaUrl}
+						on:input={onInputChange}
+						bind:value={openseaUrl}
 					/>
 				</div>
 

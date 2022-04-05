@@ -82,7 +82,7 @@
 				{/each}
 			</ul>
 		{:else}
-			<p class="heading mb-12">Loading Analysis...</p>
+			<p class="text-xl font-bold mb-8">Analyzing...</p>
 		{/if}
 
 		<button
