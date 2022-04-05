@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
+	import { nftName } from '$lib/utils/nft';
 	import { analyzeTokenUri } from '@startupdotdev/forever721';
 	import { getNftMetadata, getNftTokenUri } from '$lib/utils/alchemy';
 
@@ -16,7 +17,7 @@
 	let evaluation: Grade;
 
 	$: displayableImage = displayableIpfsUrl(nft?.metadata?.image);
-	$: name = nft?.metadata?.name || `#${nft?.id?.tokenId}`;
+	$: name = nftName(nft);
 
 	onMount(async () => {
 		console.log('onMount analyze');

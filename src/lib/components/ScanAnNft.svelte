@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { parseOpenseaUrl } from '$lib/utils/opensea';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
+	import { nftName } from '$lib/utils/nft';
 	import NftAnalysis from '$lib/components/NftAnalysis.svelte';
 	import { getNftMetadata } from '$lib/utils/alchemy';
 	import type { Nft, OpenseaDataParse } from 'src/global';
@@ -14,7 +15,7 @@
 
 	let nft: Nft;
 	$: displayableImage = displayableIpfsUrl(nft?.metadata?.image);
-	$: name = nft?.metadata?.name || `#${nft?.id?.tokenId}`;
+	$: name = nftName(nft);
 
 	function evaluateOpenseaUrl(url: string) {
 		const result: OpenseaDataParse = parseOpenseaUrl(url);
@@ -102,7 +103,7 @@
 
 		<div class="md:w-1/2 md:ml-4 lg:ml-12">
 			{#if nft}
-				<p class="text-xl font-bold mb-8">{name}</p>
+				<p class="text-2xl font-bold mb-8">{name}</p>
 			{/if}
 
 			<form on:submit|preventDefault={onSubmit}>
