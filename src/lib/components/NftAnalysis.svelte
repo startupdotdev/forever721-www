@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
+	import { nftName } from '$lib/utils/nft';
 	import { analyzeTokenUri } from '@startupdotdev/forever721';
 	import { getNftMetadata, getNftTokenUri } from '$lib/utils/alchemy';
 
@@ -12,10 +13,11 @@
 	export let clear: Function;
 
 	let tokenUri: string;
-	let metadata: NftMetadata;
+	let nft: Nft;
 	let evaluation: Grade;
 
-	$: displayableImage = displayableIpfsUrl(metadata?.image);
+	$: displayableImage = displayableIpfsUrl(nft?.metadata?.image);
+	$: name = nftName(nft);
 
 	onMount(async () => {
 		console.log('onMount analyze');
@@ -27,14 +29,14 @@
 		console.log('analyze evaluation', evaluation);
 
 		// TODO: if the package also returned the metadata, we wouldn't have to fetch this again
-		const nft: Nft = await getNftMetadata(contractAddress, tokenId);
-		metadata = nft.metadata;
+		const nftData: Nft = await getNftMetadata(contractAddress, tokenId);
+		nft = nftData;
 	});
 </script>
 
 <div class="md:flex md:flex-row md:items-center">
 	<div class="md:w-1/2">
-		{#if metadata}
+		{#if nft}
 			<img src={displayableImage} class="w-full mb-4 rounded" />
 		{:else}
 			<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4">
@@ -56,8 +58,8 @@
 	</div>
 
 	<div class="md:w-1/2 md:ml-4 lg:ml-12">
-		{#if metadata}
-			<p class="text-xl font-bold mb-8">{metadata.name}</p>
+		{#if nft}
+			<p class="text-2xl font-bold mb-8">{name}</p>
 		{/if}
 
 		{#if evaluation}
@@ -82,7 +84,7 @@
 				{/each}
 			</ul>
 		{:else}
-			<p class="heading mb-12">Loading Analysis...</p>
+			<p class="text-xl font-bold mb-8">Analyzing...</p>
 		{/if}
 
 		<button

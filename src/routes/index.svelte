@@ -52,7 +52,7 @@
 		<p class="mb-2">NFT ownership is permanently recorded on the blockchain.</p>
 		<p>
 			However, for some NFTs, the metadata that we all recognize and love (the image, name, rarity
-			attributes) could change at any time. It all depends on how the developers’ setup the NFTs.
+			attributes) could change at any time. It all depends on how the developers set up the NFTs.
 		</p>
 	</div>
 

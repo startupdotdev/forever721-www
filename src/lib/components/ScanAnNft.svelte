@@ -2,9 +2,10 @@
 	import { onMount } from 'svelte';
 	import { parseOpenseaUrl } from '$lib/utils/opensea';
 	import { displayableIpfsUrl } from '$lib/utils/ipfs';
+	import { nftName } from '$lib/utils/nft';
 	import NftAnalysis from '$lib/components/NftAnalysis.svelte';
 	import { getNftMetadata } from '$lib/utils/alchemy';
-	import type { Nft, NftMetadata, OpenseaDataParse } from 'src/global';
+	import type { Nft, OpenseaDataParse } from 'src/global';
 
 	let isEvaluatingNft: boolean = false;
 
@@ -12,11 +13,16 @@
 	let contractAddress: string = '';
 	let tokenId: string = '';
 
-	let currentMetadata: NftMetadata;
-	$: displayableImage = displayableIpfsUrl(currentMetadata?.image);
+	let nft: Nft;
+	$: displayableImage = displayableIpfsUrl(nft?.metadata?.image);
+	$: name = nftName(nft);
 
-	function openseaUrlPasted(url: string) {
+	function evaluateOpenseaUrl(url: string) {
 		const result: OpenseaDataParse = parseOpenseaUrl(url);
+
+		nft = null;
+		contractAddress = '';
+		tokenId = '';
 
 		if (result) {
 			openseaUrl = result.url;
@@ -31,13 +37,13 @@
 		console.log('loadMetadata()');
 
 		try {
-			currentMetadata = null;
+			nft = null;
 
-			const nft: Nft = await getNftMetadata(_contractAddress, _tokenId);
+			const nftData: Nft = await getNftMetadata(_contractAddress, _tokenId);
 
-			console.log('loadMetadata result:', nft);
+			console.log('loadMetadata result:', nftData);
 
-			currentMetadata = nft.metadata;
+			nft = nftData;
 		} catch (error) {
 			console.error(
 				'Error fetching image for contractAddress:',
@@ -46,6 +52,16 @@
 				tokenId
 			);
 		}
+	}
+
+	function onSubmit() {
+		evaluateOpenseaUrl(openseaUrl);
+		isEvaluatingNft = true;
+	}
+
+	function onInputChange(e) {
+		openseaUrl = e.target.value;
+		evaluateOpenseaUrl(openseaUrl);
 	}
 
 	function clearInputFields() {
@@ -57,17 +73,17 @@
 	onMount(() => {
 		// Default Azuki to display on load
 		let url: string = 'https://opensea.io/assets/0xed5af388653567af2f388e6224dc7c4b3241c544/1948';
-		openseaUrlPasted(url);
+		evaluateOpenseaUrl(url);
 	});
 </script>
 
 {#if isEvaluatingNft === false}
 	<div class="md:flex md:flex-row md:items-center">
 		<div class="md:w-1/2">
-			{#if currentMetadata}
+			{#if nft}
 				<img src={displayableImage} class="w-full mb-4 rounded" />
 			{:else}
-				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center mb-4">
+				<div class="bg-gray-500 px-12 py-16 rounded flex flex-row justify-center items-center mb-4">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="text-white h-16 w-16"
@@ -86,17 +102,17 @@
 		</div>
 
 		<div class="md:w-1/2 md:ml-4 lg:ml-12">
-			{#if currentMetadata}
-				<p class="text-xl font-bold mb-8">{currentMetadata.name}</p>
+			{#if nft}
+				<p class="text-2xl font-bold mb-8">{name}</p>
 			{/if}
 
-			<form on:submit|preventDefault={() => (isEvaluatingNft = true)}>
+			<form on:submit|preventDefault={onSubmit}>
 				<div class="mb-4">
 					<p class="mb-1">OpenSea URL</p>
 					<input
 						class="border border-gray-400 rounded px-2 py-1 w-full"
-						on:paste={(e) => openseaUrlPasted(e.clipboardData.getData('text'))}
-						value={openseaUrl}
+						on:input={onInputChange}
+						bind:value={openseaUrl}
 					/>
 				</div>
 
