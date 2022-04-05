@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Forever721</title>
+	<title>Forever721 NFT Analysis</title>
 </svelte:head>
 
 <div class="pb-12">
